@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HotLine tasks — задачи, дедлайны и обратный отсчёт.">
+  <meta name="theme-color" content="#f6f6f7">
+  <title>HotLine tasks — трекер задач</title>
+  <link rel="icon" type="image/png" href="fire.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="date-picker.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <a class="brand" href="index.html" aria-label="HotLine tasks — главная">
+        <img class="brand-icon" src="fire.png" alt="" width="44" height="44">
+        <span>Hot<span class="brand-accent">Line</span><span class="brand-tasks"> tasks</span></span>
+      </a>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <h1 id="page-title">Начни с одного шага.</h1>
+      </section>
+
+      <section class="stats" aria-label="Статистика задач">
+        <div class="stat"><span class="stat-label">Активные задачи</span><strong id="active-count">0</strong></div>
+        <div class="stat stat-hot"><span class="stat-label">Горящие задачи</span><strong class="overdue-number" id="overdue-count">0</strong></div>
+      </section>
+
+      <p class="storage-warning" id="storage-warning" role="alert" hidden></p>
+
+      <div class="workspace">
+        <section class="form-panel" aria-labelledby="form-title">
+          <h2 id="form-title">Новая задача</h2>
+          <form id="task-form">
+            <label for="subject">Название</label>
+            <input id="subject" name="subject" maxlength="80" required>
+
+            <label for="title">Описание задачи</label>
+            <input id="title" name="title" maxlength="160" required>
+
+            <label for="deadline">Сдать до</label>
+            <input id="deadline-value" name="deadline" type="hidden">
+            <button id="deadline" class="date-trigger" type="button" aria-haspopup="dialog" aria-controls="date-dialog">
+              <span id="deadline-label"></span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v4m10-4v4M4 10h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <button class="primary-button" type="submit">Добавить задачу <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </form>
+        </section>
+
+        <section class="tasks-panel" aria-labelledby="tasks-title">
+          <div class="list-heading">
+            <h2 id="tasks-title">Мои задачи <span id="total-count" class="count-badge">0</span></h2>
+            <label class="sort-label" for="sort">Порядок
+              <select id="sort">
+                <option value="deadline">По сроку сдачи</option>
+                <option value="newest">Сначала новые</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="filters" role="group" aria-label="Фильтр задач">
+            <button type="button" class="filter-button selected" data-filter="all" aria-pressed="true">Все</button>
+            <button type="button" class="filter-button" data-filter="active" aria-pressed="false">В работе</button>
+            <button type="button" class="filter-button" data-filter="done" aria-pressed="false">Готово</button>
+          </div>
+
+          <ul class="task-list" id="task-list"></ul>
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon" aria-hidden="true">✓</div>
+            <h3 id="empty-title">Начнём с чистого листа</h3>
+            <p id="empty-description">Добавь первую задачу — она появится здесь.</p>
+          </div>
+          <p class="list-hint">Отмечай выполненные задачи галочкой.</p>
+        </section>
+      </div>
+      <p id="announcement" class="visually-hidden" role="status"></p>
+    </main>
+
+    <dialog id="edit-dialog" class="edit-dialog" aria-labelledby="edit-dialog-title">
+      <form id="edit-form">
+        <div class="picker-heading">
+          <h2 id="edit-dialog-title">Изменить задачу</h2>
+          <button id="close-edit" class="picker-close" type="button" aria-label="Закрыть редактирование"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+        <label for="edit-subject">Название</label>
+        <input id="edit-subject" maxlength="80" required>
+        <label for="edit-title">Описание задачи</label>
+        <input id="edit-title" maxlength="160" required>
+        <label for="edit-deadline">Сдать до</label>
+        <input id="edit-deadline-value" type="hidden">
+        <button id="edit-deadline" class="date-trigger" type="button" aria-haspopup="dialog" aria-controls="date-dialog">
+          <span id="edit-deadline-label"></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v4m10-4v4M4 10h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="edit-dialog-actions">
+          <button id="cancel-edit" class="cancel-edit" type="button">Отмена</button>
+          <button class="primary-button" type="submit">Сохранить</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
+      <form method="dialog">
+        <h2 id="delete-title">Удалить задачу?</h2>
+        <p id="delete-description"></p>
+        <div class="dialog-actions">
+          <button value="cancel" autofocus>Отмена</button>
+          <button value="delete" class="confirm-delete">Удалить</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="date-dialog" class="date-dialog" aria-labelledby="date-dialog-title">
+      <form id="date-picker-form">
+        <div class="picker-heading">
+          <h2 id="date-dialog-title">Дата и время</h2>
+          <button id="close-date-picker" class="picker-close" type="button" aria-label="Закрыть календарь">×</button>
+        </div>
+        <div class="month-navigation">
+          <button id="previous-month" type="button" aria-label="Предыдущий месяц">‹</button>
+          <h3 id="calendar-month" aria-live="polite"></h3>
+          <button id="next-month" type="button" aria-label="Следующий месяц">›</button>
+        </div>
+        <div class="calendar-weekdays" aria-hidden="true"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+        <div id="calendar-days" class="calendar-days" role="group" aria-label="Выбрать день"></div>
+        <div class="picker-time">
+          <span>Время</span>
+          <div class="time-controls">
+            <input id="picker-hours" type="number" min="0" max="23" step="1" aria-label="Часы" required>
+            <span aria-hidden="true">:</span>
+            <input id="picker-minutes" type="number" min="0" max="59" step="1" aria-label="Минуты" required>
+          </div>
+        </div>
+        <div class="picker-actions">
+          <button id="picker-today" class="today-button" type="button">Сегодня</button>
+          <button class="primary-button" type="submit">Выбрать</button>
+        </div>
+      </form>
+    </dialog>
+
+    <footer>HotLine tasks · трекер задач</footer>
+  </div>
+</body>
+</html>
