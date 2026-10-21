@@ -2,14 +2,14 @@
 const STORAGE_KEY = "study-deadlines-tasks";
 const MOTIVATION_KEY = "hotlines-last-motivation";
 const motivations = [
-  "Начни с одного шага.",
-  "Маленький шаг — уже движение.",
-  "Сегодня можно чуть больше.",
-  "Делай в своём темпе.",
-  "Одна задача за раз.",
-  "Твой прогресс начинается сейчас.",
-  "Начатое становится возможным.",
-  "Освободи время для важного."
+  { start: "Не обязательно видеть весь путь —", accent: "Начни с одного шага.", end: "Следующий станет понятнее в движении." },
+  { start: "Даже когда цель кажется далёкой,", accent: "Маленький шаг — уже движение.", end: "Дай себе время пройти свой путь." },
+  { start: "Чтобы приблизиться к большому,", accent: "Сделай одно маленькое дело.", end: "И оставь себе силы на завтра." },
+  { start: "Не сравнивай свой путь с чужим —", accent: "Делай в своём темпе.", end: "Твой ритм тоже ведёт вперёд." },
+  { start: "Когда всё кажется слишком сложным,", accent: "Одна задача за раз.", end: "Так большие планы становятся понятными шагами." },
+  { start: "Не жди идеального момента —", accent: "Начни с того, что можешь.", end: "Для первого шага достаточно сегодняшнего дня." },
+  { start: "Путь становится короче, когда ты", accent: "Продолжаешь двигаться.", end: "Даже если сегодня совсем понемногу." },
+  { start: "В каждом дне найдётся место, чтобы", accent: "Сделать главное.", end: "А потом спокойно выдохнуть." }
 ];
 const form = document.querySelector("#task-form");
 const subjectInput = document.querySelector("#subject");
@@ -44,10 +44,12 @@ function showStorageWarning(message) {
 function showMotivation() {
   let previous = null;
   try { previous = localStorage.getItem(MOTIVATION_KEY); } catch { /* Без хранилища фраза всё равно появится. */ }
-  const choices = motivations.filter(phrase => phrase !== previous);
+  const choices = motivations.filter(phrase => phrase.accent !== previous);
   const phrase = choices[Math.floor(Math.random() * choices.length)];
-  document.querySelector("#page-title").textContent = phrase;
-  try { localStorage.setItem(MOTIVATION_KEY, phrase); } catch { /* Список задач работает независимо. */ }
+  document.querySelector("#quote-start").textContent = phrase.start;
+  document.querySelector("#page-title").textContent = phrase.accent;
+  document.querySelector("#quote-end").textContent = phrase.end;
+  try { localStorage.setItem(MOTIVATION_KEY, phrase.accent); } catch { /* Список задач работает независимо. */ }
 }
 
 // Дата и время относятся к местному часовому поясу браузера.
@@ -296,7 +298,7 @@ function createTaskCard(task) {
   fill.className = "time-fill";
   const flame = document.createElement("img");
   flame.className = "timer-flame";
-  flame.src = "fire.png";
+  flame.src = "fire.png?v=20261021b";
   flame.alt = "";
   flame.width = 28;
   flame.height = 28;

@@ -7,6 +7,7 @@ const pickerLabel = document.querySelector("#deadline-label");
 const pickerDays = document.querySelector("#calendar-days");
 const pickerHours = document.querySelector("#picker-hours");
 const pickerMinutes = document.querySelector("#picker-minutes");
+const pickerEndOfDay = document.querySelector("#picker-end-of-day");
 let selectedDay = "";
 let visibleMonth = new Date();
 let pickerClosing = false;
@@ -28,6 +29,7 @@ function openDeadlinePicker(valueInput = pickerValue, label = pickerLabel, trigg
   visibleMonth = new Date(initial.getFullYear(), initial.getMonth(), 1);
   pickerHours.value = String(initial.getHours()).padStart(2, "0");
   pickerMinutes.value = String(initial.getMinutes()).padStart(2, "0");
+  updateEndOfDayState();
   renderCalendar();
   pickerDialog.classList.remove("closing");
   pickerDialog.showModal();
@@ -84,6 +86,20 @@ function setDeadlinePicker(value, valueInput = pickerValue, label = pickerLabel)
 
 function resetDeadlinePicker() {
   setDeadlinePicker("");
+}
+
+function updateEndOfDayState() {
+  const isEndOfDay = Number(pickerHours.value) === 23 && Number(pickerMinutes.value) === 59;
+  pickerEndOfDay.setAttribute("aria-pressed", String(isEndOfDay));
+}
+
+pickerEndOfDay.addEventListener("click", () => {
+  pickerHours.value = "23";
+  pickerMinutes.value = "59";
+  updateEndOfDayState();
+});
+for (const input of [pickerHours, pickerMinutes]) {
+  input.addEventListener("input", updateEndOfDayState);
 }
 
 pickerTrigger.addEventListener("click", () => openDeadlinePicker());

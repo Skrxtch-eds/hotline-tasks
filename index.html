@@ -4,30 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HotLine tasks — задачи, дедлайны и обратный отсчёт.">
-  <meta name="theme-color" content="#f6f6f7">
+  <meta name="theme-color" content="#eeede9">
   <title>HotLine tasks — трекер задач</title>
-  <link rel="icon" type="image/png" href="fire.png">
-  <link rel="stylesheet" href="styles.css">
-  <script src="date-picker.js" defer></script>
-  <script src="app.js" defer></script>
+  <link rel="icon" type="image/png" href="assets/logo.png?v=relaxed">
+  <link rel="stylesheet" href="styles.css?v=20261021b">
+  <script src="date-picker.js?v=20261021b" defer></script>
+  <script src="app.js?v=20261021b" defer></script>
 </head>
 <body>
   <div class="page">
     <header class="header">
       <a class="brand" href="index.html" aria-label="HotLine tasks — главная">
-        <img class="brand-icon" src="fire.png" alt="" width="44" height="44">
+        <img class="brand-icon" src="assets/logo.png?v=relaxed" alt="" width="44" height="44">
         <span>Hot<span class="brand-accent">Line</span><span class="brand-tasks"> tasks</span></span>
       </a>
     </header>
 
     <main>
       <section class="intro" aria-labelledby="page-title">
-        <h1 id="page-title">Начни с одного шага.</h1>
+        <div class="intro-copy">
+          <p class="quote-start" id="quote-start">Не обязательно видеть весь путь —</p>
+          <h1 id="page-title">Начни с одного шага.</h1>
+          <p class="intro-caption" id="quote-end">Следующий станет понятнее в движении.</p>
+        </div>
+        <div class="page-ribbon intro-ribbon" aria-hidden="true"><img src="assets/ribbon-top.png" alt="" width="2172" height="724"></div>
       </section>
 
       <section class="stats" aria-label="Статистика задач">
-        <div class="stat"><span class="stat-label">Активные задачи</span><strong id="active-count">0</strong></div>
-        <div class="stat stat-hot"><span class="stat-label">Горящие задачи</span><strong class="overdue-number" id="overdue-count">0</strong></div>
+        <div class="stat"><span class="stat-label">Активные задачи</span><strong id="active-count">0</strong><span class="stat-caption">В твоём ритме</span></div>
+        <div class="stat stat-hot"><span class="stat-label">Горящие задачи</span><strong class="overdue-number" id="overdue-count">0</strong><span class="stat-caption">Требуют внимания</span></div>
       </section>
 
       <p class="storage-warning" id="storage-warning" role="alert" hidden></p>
@@ -55,7 +60,7 @@
 
         <section class="tasks-panel" aria-labelledby="tasks-title">
           <div class="list-heading">
-            <h2 id="tasks-title">Мои задачи <span id="total-count" class="count-badge">0</span></h2>
+            <h2 id="tasks-title">Мои задачи <span id="total-count" hidden aria-hidden="true">0</span></h2>
             <label class="sort-label" for="sort">Порядок
               <select id="sort">
                 <option value="deadline">По сроку сдачи</option>
@@ -137,6 +142,7 @@
             <input id="picker-minutes" type="number" min="0" max="59" step="1" aria-label="Минуты" required>
           </div>
         </div>
+        <button id="picker-end-of-day" class="end-of-day-button" type="button" aria-pressed="false">До конца дня <span>23:59</span></button>
         <div class="picker-actions">
           <button id="picker-today" class="today-button" type="button">Сегодня</button>
           <button class="primary-button" type="submit">Выбрать</button>
@@ -144,7 +150,8 @@
       </form>
     </dialog>
 
-    <footer>HotLine tasks · трекер задач</footer>
+    <div class="page-ribbon bottom-ribbon" aria-hidden="true"><img src="assets/ribbon-bottom.png" alt="" width="2172" height="724" loading="lazy"></div>
+    <footer><span>HotLine tasks</span><span>Меньше суеты. Больше своего.</span><a href="#page-title">Наверх ↑</a></footer>
   </div>
 </body>
 </html>
